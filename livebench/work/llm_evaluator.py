@@ -101,15 +101,14 @@ class LLMEvaluator:
         if not occupation:
             return (0.0, "Error: Task missing occupation field", 0.0)
 
-        # Load meta-prompt for this category
+        # Load meta-prompt for this category; fall back to default for unknown occupations
         meta_prompt = self._load_meta_prompt(occupation)
-
         if not meta_prompt:
-            # Raise error if no meta-prompt available - no fallback
+            meta_prompt = self._load_meta_prompt("default")
+        if not meta_prompt:
             raise FileNotFoundError(
-                f"No meta-prompt found for occupation '{occupation}'. "
-                f"LLM evaluation requires category-specific rubrics. "
-                f"Check that eval/meta_prompts/ contains the appropriate file."
+                f"No meta-prompt found for occupation '{occupation}' and no eval/meta_prompts/default.json. "
+                f"Add a rubric for this occupation or ensure default.json exists."
             )
 
         # Check if artifacts exist

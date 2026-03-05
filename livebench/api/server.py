@@ -11,6 +11,7 @@ import os
 import json
 import asyncio
 import random
+from contextlib import asynccontextmanager
 from datetime import datetime
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -20,7 +21,19 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
 import glob
 
-app = FastAPI(title="LiveBench API", version="1.0.0")
+
+@asynccontextmanager
+async def _lifespan(_app: FastAPI):
+    task = asyncio.create_task(watch_agent_files())
+    yield
+    task.cancel()
+    try:
+        await task
+    except asyncio.CancelledError:
+        pass
+
+
+app = FastAPI(title="LiveBench API", version="1.0.0", lifespan=_lifespan)
 
 # Enable CORS for frontend
 app.add_middleware(
@@ -802,12 +815,6 @@ async def watch_agent_files():
             print(f"Error watching files: {e}")
 
         await asyncio.sleep(1)  # Check every second
-
-
-@app.on_event("startup")
-async def startup_event():
-    """Start background tasks on startup"""
-    asyncio.create_task(watch_agent_files())
 
 
 if __name__ == "__main__":

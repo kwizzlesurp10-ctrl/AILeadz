@@ -449,7 +449,7 @@ const Leaderboard = ({ hiddenAgents = new Set() }) => {
 
   return (
     <div
-      className={isFullscreen ? '' : 'p-8 space-y-5'}
+      className={isFullscreen ? '' : 'p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-5'}
       style={isFullscreen ? {
         position: 'fixed', inset: 0, zIndex: 9999,
         backgroundColor: '#020b18',
@@ -464,19 +464,19 @@ const Leaderboard = ({ hiddenAgents = new Set() }) => {
       {/* ── Header banner ─────────────────────────────────────────────── */}
       <motion.div
         initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }}
-        className={`bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 rounded-2xl text-white shadow-lg ${isFullscreen ? 'px-5 py-3' : 'p-6'}`}
+        className={`bg-gradient-to-r from-yellow-500 via-amber-500 to-orange-500 rounded-xl sm:rounded-2xl text-white shadow-lg ${isFullscreen ? 'px-5 py-3' : 'p-4 sm:p-6'}`}
         style={isFullscreen ? { flexShrink: 0 } : {}}
       >
-        <div className="flex items-center gap-4">
-          <div className={`bg-white/20 rounded-xl flex items-center justify-center shrink-0 ${isFullscreen ? 'w-10 h-10' : 'w-14 h-14'}`}>
-            <Trophy className={isFullscreen ? 'w-6 h-6' : 'w-8 h-8'} />
+        <div className="flex flex-wrap items-center gap-3 sm:gap-4">
+          <div className={`bg-white/20 rounded-lg sm:rounded-xl flex items-center justify-center shrink-0 ${isFullscreen ? 'w-10 h-10' : 'w-12 h-12 sm:w-14 sm:h-14'}`}>
+            <Trophy className={isFullscreen ? 'w-6 h-6' : 'w-6 h-6 sm:w-8 sm:h-8'} />
           </div>
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-3 mb-1">
-              <h1 className={`font-bold ${isFullscreen ? 'text-xl' : 'text-3xl'}`}>Leaderboard</h1>
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 mb-1">
+              <h1 className={`font-bold ${isFullscreen ? 'text-xl' : 'text-2xl sm:text-3xl'}`}>Leaderboard</h1>
               <LiveBadge />
             </div>
-            <div className="flex items-center gap-3 text-white/80 text-sm">
+            <div className="flex flex-wrap items-center gap-2 sm:gap-3 text-white/80 text-xs sm:text-sm">
               <span>{visibleData.length} agent{visibleData.length !== 1 ? 's' : ''} competing</span>
               <span>·</span>
               <LastUpdated lastFetchTime={lastFetch} />
@@ -484,9 +484,9 @@ const Leaderboard = ({ hiddenAgents = new Set() }) => {
           </div>
           {topAgent && (
             <div className="text-right shrink-0">
-              <p className="text-xs text-white/70 uppercase tracking-widest mb-0.5">Top Performer</p>
-              <p className={`font-bold ${isFullscreen ? 'text-sm' : 'text-lg'}`}>{dn(topAgent.signature)}</p>
-              <p className="text-sm text-white/90 font-mono">
+              <p className="text-[10px] sm:text-xs text-white/70 uppercase tracking-widest mb-0.5">Top Performer</p>
+              <p className={`font-bold truncate max-w-[140px] sm:max-w-none ${isFullscreen ? 'text-sm' : 'text-base sm:text-lg'}`}>{dn(topAgent.signature)}</p>
+              <p className="text-xs sm:text-sm text-white/90 font-mono">
                 ${topAgent.current_balance.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>
@@ -507,13 +507,13 @@ const Leaderboard = ({ hiddenAgents = new Set() }) => {
       {chartData.length > 0 && (
         <motion.div
           initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 }}
-          className="rounded-2xl shadow-sm border border-slate-700/50 relative overflow-hidden"
+          className="rounded-xl sm:rounded-2xl shadow-sm border border-slate-700/50 relative overflow-hidden p-4 sm:p-6"
           style={{
             backgroundColor: '#0a1628',
             animation: 'borderPulse 4s ease-in-out infinite',
             ...(isFullscreen
               ? { flex: chartFlexRatio, minHeight: 0, display: 'flex', flexDirection: 'column', padding: '10px 16px' }
-              : { padding: '24px' }
+              : {}
             ),
           }}
         >

@@ -6,7 +6,8 @@ export default defineConfig(({ command }) => ({
   plugins: [react()],
   base: command === 'build' ? '/ClawWork/' : '/',
   server: {
-    port: 3000,
+    port: 3010,
+    strictPort: true,
     proxy: {
       '/api': {
         target: 'http://localhost:8000',

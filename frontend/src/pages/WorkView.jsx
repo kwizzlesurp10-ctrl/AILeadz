@@ -221,9 +221,16 @@ const TerminalLogModal = ({ agent, date, onClose }) => {
             </div>
           )}
           {error && (
-            <div className="text-center py-16">
+            <div className="text-center py-16 px-4">
               <AlertCircle className="w-10 h-10 text-red-400 mx-auto mb-3" />
-              <p className="text-gray-400">{error === '404' ? 'No log file found for this date.' : error}</p>
+              <p className="text-gray-400 font-medium">
+                {error === '404' ? 'No log file found for this date.' : error}
+              </p>
+              {error === '404' && (
+                <p className="text-gray-500 text-sm mt-2 max-w-md mx-auto">
+                  Terminal logs are created when an agent runs for that date (e.g. <code className="bg-gray-800 px-1.5 py-0.5 rounded text-gray-300">./run_test_agent.sh</code>). The dashboard being &quot;live&quot; means the UI and API are running; it does not mean agents have been executed for this date.
+                </p>
+              )}
             </div>
           )}
           {content && (
@@ -366,21 +373,21 @@ const WorkView = ({ agents, selectedAgent }) => {
   }
 
   return (
-    <div className="p-8 space-y-6">
+    <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
       {/* Header */}
       <motion.div
         initial={{ opacity: 0, y: -20 }}
         animate={{ opacity: 1, y: 0 }}
-        className="flex items-center justify-between"
+        className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between"
       >
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Work Tasks</h1>
-          <p className="text-gray-500 mt-1">Track work assignments and completions</p>
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Work Tasks</h1>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">Track work assignments and completions</p>
         </div>
-        <div className="flex items-center space-x-4">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-4">
           <button
             onClick={() => { setSortMode(m => m === 'score' ? 'date' : 'score'); setCurrentPage(1) }}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl border text-sm font-medium transition-all ${
+            className={`flex items-center space-x-2 px-3 py-2 sm:px-4 rounded-xl border text-xs sm:text-sm font-medium transition-all ${
               sortMode === 'score'
                 ? 'bg-blue-600 border-blue-600 text-white shadow-sm'
                 : 'bg-white border-gray-200 text-gray-600 hover:border-blue-300 hover:text-blue-600'
@@ -390,13 +397,13 @@ const WorkView = ({ agents, selectedAgent }) => {
             <ArrowUpDown className="w-4 h-4" />
             <span>Rank by Score</span>
           </button>
-          <div className="bg-white rounded-xl px-6 py-3 shadow-sm border border-gray-200">
-            <p className="text-sm text-gray-500">Total Tasks</p>
-            <p className="text-2xl font-bold text-gray-900">{poolSize ?? tasks.length}</p>
+          <div className="bg-white rounded-xl px-4 py-2.5 sm:px-6 sm:py-3 shadow-sm border border-gray-200">
+            <p className="text-xs sm:text-sm text-gray-500">Total Tasks</p>
+            <p className="text-xl sm:text-2xl font-bold text-gray-900">{poolSize ?? tasks.length}</p>
           </div>
-          <div className="bg-white rounded-xl px-6 py-3 shadow-sm border border-gray-200">
-            <p className="text-sm text-gray-500">Completed</p>
-            <p className="text-2xl font-bold text-green-600">
+          <div className="bg-white rounded-xl px-4 py-2.5 sm:px-6 sm:py-3 shadow-sm border border-gray-200">
+            <p className="text-xs sm:text-sm text-gray-500">Completed</p>
+            <p className="text-xl sm:text-2xl font-bold text-green-600">
               {tasks.filter(t => t.completed).length}
             </p>
           </div>
@@ -411,7 +418,7 @@ const WorkView = ({ agents, selectedAgent }) => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: Math.min(index * 0.03, 0.3) }}
-            className="bg-white rounded-2xl p-6 shadow-sm border border-gray-200 hover:shadow-md transition-all cursor-pointer"
+            className="bg-white rounded-xl sm:rounded-2xl p-4 sm:p-6 shadow-sm border border-gray-200 hover:shadow-md transition-all cursor-pointer"
             onClick={() => setSelectedTask(task)}
           >
             <div className="flex items-start space-x-4">

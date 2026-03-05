@@ -5,9 +5,15 @@
 
 set -e
 
-# Activate conda environment
-eval "$(conda shell.bash hook)"
-conda activate base
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+
+if [ -d ".venv" ]; then
+    source .venv/bin/activate
+elif command -v conda &>/dev/null; then
+    eval "$(conda shell.bash hook)"
+    conda activate base 2>/dev/null || true
+fi
 
 echo "🚀 Starting LiveBench Dashboard..."
 echo ""
@@ -88,14 +94,18 @@ trap cleanup INT TERM
 # Kill existing processes before starting
 echo -e "${BLUE}🔍 Checking for existing services...${NC}"
 kill_port 8000 "Backend API"
-kill_port 3000 "Frontend"
+kill_port 3010 "Frontend"
+kill_port 3001 "Frontend (legacy)"
+kill_port 3002 "Frontend (legacy)"
+kill_port 3003 "Frontend (legacy)"
 echo ""
 
 # Create logs directory if it doesn't exist
 mkdir -p logs
 
-# Start Backend API
+# Start Backend API (PYTHONPATH = repo root for imports)
 echo -e "${BLUE}🔧 Starting Backend API...${NC}"
+export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
 cd livebench/api
 python server.py > ../../logs/api.log 2>&1 &
 API_PID=$!
@@ -112,6 +122,13 @@ if ! kill -0 $API_PID 2>/dev/null; then
 fi
 
 echo -e "${GREEN}✓ Backend API started (PID: $API_PID)${NC}"
+
+# Ensure frontend port is free right before starting
+kill_port 3010 "Frontend"
+if command -v fuser &>/dev/null; then
+  fuser -k 3010/tcp 2>/dev/null || true
+  sleep 1
+fi
 
 # Start Frontend
 echo -e "${BLUE}🎨 Starting Frontend Dashboard...${NC}"
@@ -137,7 +154,7 @@ echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━
 echo -e "${GREEN}🎉 LiveBench Dashboard is running!${NC}"
 echo -e "${GREEN}━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━${NC}"
 echo ""
-echo -e "  ${BLUE}📊 Dashboard:${NC}  http://localhost:3000"
+echo -e "  ${BLUE}📊 Dashboard:${NC}  http://localhost:3010"
 echo -e "  ${BLUE}🔧 Backend API:${NC} http://localhost:8000"
 echo -e "  ${BLUE}📚 API Docs:${NC}    http://localhost:8000/docs"
 echo ""

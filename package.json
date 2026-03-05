@@ -1,0 +1,11 @@
+{
+  "name": "clawwork",
+  "private": true,
+  "workspaces": ["packages/*", "web"],
+  "scripts": {
+    "dev:web": "npm run dev -w clawwork-web",
+    "build:web": "npm run build -w clawwork-web",
+    "db:generate": "npm run db:generate -w @clawwork/db",
+    "db:migrate": "npm run db:migrate -w @clawwork/db"
+  }
+}

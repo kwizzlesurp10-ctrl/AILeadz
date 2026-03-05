@@ -1,0 +1,25 @@
+FROM node:20-alpine AS builder
+WORKDIR /app
+COPY package.json package-lock.json* ./
+COPY packages/db/package.json packages/db/schema.ts packages/db/index.ts packages/db/drizzle.config.ts ./packages/db/
+COPY web/package.json web/next.config.js web/tsconfig.json web/tailwind.config.ts web/postcss.config.js ./web/
+COPY web/app ./web/app
+COPY web/lib ./web/lib
+COPY web/public ./web/public
+RUN cd packages/db && npm install && cd ../..
+RUN cd web && npm install ../packages/db && npm install
+COPY packages/db/ ./packages/db/
+COPY web/ ./web/
+RUN cd packages/db && npx drizzle-kit generate 2>/dev/null || true
+RUN cd web && npm run build
+
+FROM node:20-alpine AS runner
+WORKDIR /app
+ENV NODE_ENV=production
+COPY --from=builder /app/web/public ./public
+COPY --from=builder /app/web/.next/standalone ./
+COPY --from=builder /app/web/.next/static ./.next/static
+USER node
+EXPOSE 3000
+ENV PORT=3000
+CMD ["node", "server.js"]

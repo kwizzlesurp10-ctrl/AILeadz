@@ -497,21 +497,21 @@ const Artifacts = () => {
   }
 
   return (
-    <div className="p-8 space-y-6">
-      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex items-center justify-between">
-        <div>
-          <h1 className="text-3xl font-bold text-gray-900">Artifacts</h1>
-          <p className="text-gray-500 mt-1">Browse agent-produced documents</p>
+    <div className="p-4 sm:p-6 lg:p-8 space-y-4 sm:space-y-6">
+      <motion.div initial={{ opacity: 0, y: -20 }} animate={{ opacity: 1, y: 0 }} className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
+        <div className="min-w-0">
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Artifacts</h1>
+          <p className="text-gray-500 mt-1 text-sm sm:text-base">Browse agent-produced documents</p>
         </div>
-        <div className="flex items-center space-x-3">
+        <div className="flex flex-wrap items-center gap-2 sm:gap-3">
           <div className="flex items-center bg-white rounded-xl border border-gray-200 p-1">
             {FILTERS.map(f => (
               <button key={f.key} onClick={() => setFilter(f.key)}
-                className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${filter === f.key ? 'bg-primary-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}>{f.label}</button>
+                className={`px-2.5 py-1.5 sm:px-3 rounded-lg text-xs sm:text-sm font-medium transition-colors ${filter === f.key ? 'bg-primary-600 text-white' : 'text-gray-600 hover:bg-gray-50'}`}>{f.label}</button>
             ))}
           </div>
-          <button onClick={fetchArtifactsData} className="inline-flex items-center space-x-2 px-4 py-2 bg-white border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors">
-            <Shuffle className="w-4 h-4" /><span className="text-sm font-medium">Shuffle</span>
+          <button onClick={fetchArtifactsData} className="inline-flex items-center space-x-2 px-3 py-2 sm:px-4 bg-white border border-gray-200 rounded-xl text-gray-700 hover:bg-gray-50 transition-colors">
+            <Shuffle className="w-4 h-4" /><span className="text-xs sm:text-sm font-medium">Shuffle</span>
           </button>
         </div>
       </motion.div>

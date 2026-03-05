@@ -3,18 +3,21 @@ import { Link, useLocation } from 'react-router-dom'
 import { Home, Briefcase, Brain, Activity, Trophy, FolderOpen, Settings, X, Check, Star, Github } from 'lucide-react'
 import { useDisplayName } from '../DisplayNamesContext'
 
-const Sidebar = ({ agents, allAgents, hiddenAgents, onUpdateHiddenAgents, selectedAgent, onSelectAgent, connectionStatus }) => {
+const Sidebar = ({ agents, allAgents, hiddenAgents, onUpdateHiddenAgents, selectedAgent, onSelectAgent, connectionStatus, isOpen = false, onClose }) => {
   const location = useLocation()
   const dn = useDisplayName()
   const [showSettings, setShowSettings] = useState(false)
   const [pendingHidden, setPendingHidden] = useState(new Set())
   const [isDirty, setIsDirty] = useState(false)
 
-  // Sync pendingHidden with hiddenAgents when the panel opens or hiddenAgents changes externally
   useEffect(() => {
     setPendingHidden(new Set(hiddenAgents))
     setIsDirty(false)
   }, [hiddenAgents, showSettings])
+
+  useEffect(() => {
+    onClose?.()
+  }, [location.pathname])
 
   const isActive = (path) => location.pathname === path
 
@@ -84,18 +87,33 @@ const Sidebar = ({ agents, allAgents, hiddenAgents, onUpdateHiddenAgents, select
   }
 
   return (
-    <aside className="w-64 bg-white border-r border-gray-200 flex flex-col">
-      {/* Logo */}
-      <div className="p-6 border-b border-gray-200">
-        <div className="flex items-center space-x-3">
+    <aside
+      className={`
+        w-64 bg-white border-r border-gray-200 flex flex-col
+        fixed md:relative inset-y-0 left-0 z-40 md:z-auto
+        transform transition-transform duration-300 ease-out
+        ${isOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
+      `}
+    >
+      {/* Logo + mobile close */}
+      <div className="p-4 md:p-6 border-b border-gray-200 flex items-center justify-between md:block">
+        <div className="flex items-center space-x-3 min-w-0">
           <div className="w-10 h-10 gradient-primary rounded-lg flex items-center justify-center">
             <Activity className="w-6 h-6 text-white" />
           </div>
-          <div>
-            <h1 className="text-xl font-bold text-gray-900">LiveBench</h1>
+          <div className="min-w-0">
+            <h1 className="text-xl font-bold text-gray-900 truncate">LiveBench</h1>
             <p className="text-xs text-gray-500">AI Survival Game</p>
           </div>
         </div>
+        <button
+          type="button"
+          onClick={onClose}
+          className="p-2 rounded-lg text-gray-500 hover:bg-gray-100 md:hidden shrink-0"
+          aria-label="Close menu"
+        >
+          <X className="w-5 h-5" />
+        </button>
       </div>
 
       {/* Connection Status */}

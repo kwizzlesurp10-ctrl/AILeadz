@@ -32,6 +32,9 @@
       "meta_prompts_dir": "./eval/meta_prompts"
     },
     "data_path": "./livebench/data/agent_data",
-    "gdpval_path": "./gdpval"
+    "task_source": {
+      "type": "jsonl",
+      "path": "./livebench/data/tasks/example_tasks.jsonl"
+    }
   }
 }

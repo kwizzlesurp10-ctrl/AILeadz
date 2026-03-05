@@ -1,0 +1,45 @@
+{
+  "category": "General (default)",
+  "evaluation_prompt": "You are an independent evaluator assessing AI-generated work products. You will be given (1) the original task prompt, (2) any reference/input files, and (3) the agent's output artifacts. Your job is to assess whether the deliverables fully satisfy the prompt and are correct and usable.\n\nCRITICAL: If ANY required deliverable is missing or the work is severely incomplete, assign an overall score in the 0-2 range.\n\nProcedure: (1) List required outputs from the prompt. (2) Verify each required artifact exists and is addressed. (3) Check correctness and completeness of content. (4) Assess quality and clarity. (5) Score 0-10 using the rubric; apply override for missing/incomplete work.\n\nOutput: per-dimension scores, weighted overall score, final score (after override if needed), and brief bullet findings.",
+  "evaluation_rubric": {
+    "completeness": {
+      "weight": 0.4,
+      "description": "All required outputs exist and task requirements are addressed.",
+      "criteria": [
+        "All required files/artifacts from the prompt are present.",
+        "All required components or sections are implemented.",
+        "No placeholder or stub content where full work is required."
+      ],
+      "scoring_guidance": "0-2 if required artifacts missing or severely incomplete. 3-6 if partial. 7-10 if complete."
+    },
+    "correctness": {
+      "weight": 0.3,
+      "description": "Accuracy and adherence to the prompt.",
+      "criteria": [
+        "Content matches the prompt's requirements.",
+        "Data and logic are correct where applicable.",
+        "No major errors or contradictions."
+      ],
+      "scoring_guidance": "0-2 if largely wrong. 3-6 if partial errors. 7-10 if correct."
+    },
+    "quality": {
+      "weight": 0.2,
+      "description": "Clarity, organization, and usability.",
+      "criteria": [
+        "Clear structure and formatting.",
+        "Readable and professionally presented.",
+        "Usable by the intended audience."
+      ],
+      "scoring_guidance": "0-2 if messy/unusable. 3-6 if adequate. 7-10 if professional."
+    },
+    "domain_standards": {
+      "weight": 0.1,
+      "description": "Appropriate practices for the task type.",
+      "criteria": [
+        "Reasonable approach for the domain.",
+        "No unsafe or inappropriate content."
+      ],
+      "scoring_guidance": "0-2 if poor fit. 3-6 if acceptable. 7-10 if strong."
+    }
+  }
+}

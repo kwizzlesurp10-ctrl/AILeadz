@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef, useCallback } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
+import { Menu } from 'lucide-react'
 import Sidebar from './components/Sidebar'
 import Dashboard from './pages/Dashboard'
 import AgentDetail from './pages/AgentDetail'
@@ -83,11 +84,19 @@ function App() {
   }, [])
 
   const visibleAgents = agents.filter(a => !hiddenAgents.has(a.signature))
+  const [sidebarOpen, setSidebarOpen] = useState(false)
 
   return (
     <DisplayNamesContext.Provider value={displayNames}>
     <Router basename={import.meta.env.BASE_URL}>
       <div className="flex h-screen bg-gray-50">
+        {sidebarOpen && (
+          <div
+            className="fixed inset-0 bg-black/50 z-30 md:hidden"
+            onClick={() => setSidebarOpen(false)}
+            aria-hidden="true"
+          />
+        )}
         <Sidebar
           agents={visibleAgents}
           allAgents={agents}
@@ -96,9 +105,23 @@ function App() {
           selectedAgent={selectedAgent}
           onSelectAgent={setSelectedAgent}
           connectionStatus={connectionStatus}
+          isOpen={sidebarOpen}
+          onClose={() => setSidebarOpen(false)}
         />
 
-        <main className="flex-1 overflow-y-auto">
+        <div className="flex flex-1 flex-col min-w-0">
+          <header className="flex items-center gap-3 p-3 border-b border-gray-200 bg-white md:hidden shrink-0">
+            <button
+              type="button"
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 -ml-1 rounded-lg text-gray-600 hover:bg-gray-100"
+              aria-label="Open menu"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <span className="font-semibold text-gray-900 truncate">LiveBench</span>
+          </header>
+        <main className="flex-1 overflow-y-auto min-h-0">
           <Routes>
             <Route path="/" element={
               <Leaderboard hiddenAgents={hiddenAgents} />
@@ -129,6 +152,7 @@ function App() {
             } />
           </Routes>
         </main>
+        </div>
       </div>
     </Router>
     </DisplayNamesContext.Provider>

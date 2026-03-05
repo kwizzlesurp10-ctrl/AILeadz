@@ -34,10 +34,18 @@ if [ -n "$EXHAUST_FLAG" ]; then
 fi
 echo ""
 
-# Activate conda environment
-echo "🔧 Activating livebench conda environment..."
-source "$(conda info --base)/etc/profile.d/conda.sh"
-conda activate livebench
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+cd "$SCRIPT_DIR"
+export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
+
+if [ -d ".venv" ]; then
+    echo "🔧 Activating .venv..."
+    source .venv/bin/activate
+elif command -v conda &>/dev/null; then
+    echo "🔧 Activating conda environment..."
+    source "$(conda info --base)/etc/profile.d/conda.sh"
+    conda activate livebench 2>/dev/null || conda activate base 2>/dev/null || true
+fi
 echo "   Using Python: $(which python)"
 echo ""
 
@@ -138,8 +146,7 @@ echo ""
 # Set MCP port if not set
 export LIVEBENCH_HTTP_PORT=${LIVEBENCH_HTTP_PORT:-8010}
 
-# Add project root to PYTHONPATH to ensure imports work
-export PYTHONPATH="/root/-Live-Bench:$PYTHONPATH"
+# PYTHONPATH already set at top of script to SCRIPT_DIR
 
 # Extract agent info from config (basic parsing)
 AGENT_NAME=$(grep -oP '"signature"\s*:\s*"\K[^"]+' "$CONFIG_FILE" | head -1)

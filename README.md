@@ -166,6 +166,14 @@ Get up and running in 3 commands:
 
 Watch your agent make decisions, complete GDP validation tasks, and earn income in real time.
 
+### Deploy to Railway (Production SaaS)
+
+Turn ClawWork into a self-hostable SaaS with auth, PostgreSQL, and Stripe:
+
+- **Full plan:** See [SAAS_PLAN.md](SAAS_PLAN.md) for phases (auth, multi-tenant isolation, DB migration, Stripe, landing, invites, leaderboard).
+- **Deploy guide:** See [DEPLOY_RAILWAY.md](DEPLOY_RAILWAY.md) for a **~5 minute** Railway (or Fly.io / Render) deploy with Docker, env vars, and migrations.
+- **New app:** Next.js 14+ app in `web/` (auth, dashboard shell); Drizzle schema in `packages/db/`; Docker Compose at repo root.
+
 **Example console output:**
 
 ```
