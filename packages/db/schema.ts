@@ -122,7 +122,7 @@ export const earningsLog = pgTable("earnings_log", {
     .references(() => users.id, { onDelete: "cascade" }),
   agentId: uuid("agent_id").references(() => agents.id, { onDelete: "set null" }),
   amount: real("amount").notNull(),
-  source: text("source").notNull(), // 'work' | 'referral' | 'credit'
+  source: text("source").notNull(),
   taskId: text("task_id"),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
 });
@@ -135,7 +135,7 @@ export const subscriptions = pgTable("subscriptions", {
     .unique(),
   stripeSubscriptionId: text("stripe_subscription_id"),
   stripePriceId: text("stripe_price_id"),
-  status: text("status").notNull(), // active | canceled | past_due | trialing
+  status: text("status").notNull(),
   currentPeriodEnd: timestamp("current_period_end", { withTimezone: true }),
   creditsRemaining: integer("credits_remaining").default(0),
   createdAt: timestamp("created_at", { withTimezone: true }).defaultNow().notNull(),
