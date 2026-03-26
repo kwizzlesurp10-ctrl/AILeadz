@@ -5,7 +5,6 @@ PROJECT.md
 SETUP.md
 dev/
 docs/
-tests/
 e2b-templates/
 clawmode_legacy
 *.env
