@@ -613,7 +613,9 @@ class EconomicTracker:
                 record = json.loads(line)
                 date = record.get("date")
                 task_id = record.get("task_id")
-                rec_type = record["type"]
+                rec_type = record.get("type")
+                if rec_type is None:
+                    continue
                 
                 # Initialize date entry
                 if date and date not in analytics["by_date"]:
@@ -810,19 +812,22 @@ class EconomicTracker:
                 record = json.loads(line)
                 if record.get("date") == date:
                     task_id = record.get("task_id")
-                    
+                    rec_type = record.get("type")
+                    if rec_type is None:
+                        continue
+
                     # Track unique tasks
                     if task_id and task_id not in daily_data["tasks"]:
                         daily_data["tasks"].append(task_id)
                     
-                    if record["type"] == "llm_tokens":
+                    if rec_type == "llm_tokens":
                         daily_data["costs"]["llm_tokens"] += record.get("cost", 0.0)
                         daily_data["costs"]["total"] += record.get("cost", 0.0)
-                    elif record["type"] == "api_call":
+                    elif rec_type == "api_call":
                         channel = record.get("channel", "other_api")
                         daily_data["costs"][channel] += record.get("cost", 0.0)
                         daily_data["costs"]["total"] += record.get("cost", 0.0)
-                    elif record["type"] == "work_income":
+                    elif rec_type == "work_income":
                         actual_payment = record.get("actual_payment", 0.0)
                         daily_data["work_income"] += actual_payment
                         daily_data["tasks_completed"] += 1
