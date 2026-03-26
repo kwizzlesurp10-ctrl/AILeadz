@@ -3,6 +3,12 @@ name: PR Review Suggestions
 on:
   pull_request:
     types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_target:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+concurrency:
+  group: review-suggestions-${{ github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -15,8 +21,10 @@ jobs:
     if: github.event.pull_request.draft == false
 
     steps:
-      - name: Checkout
+      - name: Checkout PR head
         uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - name: Review GitHub Actions workflows (actionlint)
         uses: reviewdog/action-actionlint@v1
