@@ -103,13 +103,11 @@ echo ""
 # Create logs directory if it doesn't exist
 mkdir -p logs
 
-# Start Backend API (PYTHONPATH = repo root for imports)
+# Start Backend API (module-safe) via uvicorn
 echo -e "${BLUE}🔧 Starting Backend API...${NC}"
 export PYTHONPATH="$SCRIPT_DIR${PYTHONPATH:+:$PYTHONPATH}"
-cd livebench/api
-python server.py > ../../logs/api.log 2>&1 &
+uvicorn livebench.api.server:app --host 0.0.0.0 --port 8000 > logs/api.log 2>&1 &
 API_PID=$!
-cd ../..
 
 # Wait for API to start
 sleep 3
@@ -130,10 +128,10 @@ if command -v fuser &>/dev/null; then
   sleep 1
 fi
 
-# Start Frontend
-echo -e "${BLUE}🎨 Starting Frontend Dashboard...${NC}"
+# Start legacy Vite dashboard (optional)
+echo -e "${BLUE}🎨 Starting Legacy Frontend Dashboard (Vite)...${NC}"
 cd frontend
-npm run dev > ../logs/frontend.log 2>&1 &
+npm run dev -- --host 0.0.0.0 --port 3010 > ../logs/frontend.log 2>&1 &
 FRONTEND_PID=$!
 cd ..
 
