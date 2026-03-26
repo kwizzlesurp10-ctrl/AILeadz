@@ -1,0 +1,46 @@
+name: PR Review Suggestions
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  review-suggestions:
+    name: Automated review suggestions
+    runs-on: ubuntu-latest
+    if: github.event.pull_request.draft == false
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Review GitHub Actions workflows (actionlint)
+        uses: reviewdog/action-actionlint@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: warning
+          fail_on_error: 'false'
+          filter_mode: added
+
+      - name: Review shell scripts (shellcheck)
+        uses: reviewdog/action-shellcheck@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: warning
+          fail_on_error: 'false'
+          filter_mode: added
+
+      - name: Review spelling (typos)
+        uses: reviewdog/action-typos@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          reporter: github-pr-review
+          level: info
+          fail_on_error: 'false'
+          filter_mode: added
