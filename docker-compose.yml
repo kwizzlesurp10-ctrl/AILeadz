@@ -1,3 +1,5 @@
+version: "3.9"
+
 services:
   postgres:
     image: postgres:16-alpine
@@ -10,16 +12,17 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
     healthcheck:
-      test: ["CMD-SHELL", "pg_isready -U clawwork"]
+      test: ["CMD-SHELL", "pg_isready -U clawwork -d clawwork"]
       interval: 5s
       timeout: 5s
-      retries: 5
+      retries: 10
 
   api:
     build:
       context: .
       dockerfile: Dockerfile.api
-    env_file: .env
+    env_file:
+      - .env
     environment:
       DATABASE_URL: postgresql://clawwork:clawwork_secret@postgres:5432/clawwork
       PYTHONPATH: /app
@@ -35,7 +38,8 @@ services:
     build:
       context: .
       dockerfile: Dockerfile.web
-    env_file: .env
+    env_file:
+      - .env
     environment:
       DATABASE_URL: postgresql://clawwork:clawwork_secret@postgres:5432/clawwork
       NEXTAUTH_URL: http://localhost:3000
